@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {Post as PostModel, User as UserModel} from '@prisma/client';
-import { User } from 'src/auth/user.decorator';
-import { PostService } from './post.service';
+import { User } from 'src/decorators/user.decorator';
+import { PostService } from '../../services/post.service';
 import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiHeader, ApiOkResponse, ApiOperation, ApiParam, ApiResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { CreatePostBody, CreatePostDto } from 'src/models/post.models';
 

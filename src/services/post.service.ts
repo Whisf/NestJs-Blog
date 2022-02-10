@@ -11,6 +11,11 @@ export class PostService {
     ) {}
 
     async getAllPosts(): Promise<Post[]> {
+        const a = () : object => {
+            return 
+        }
+
+        console.log(typeof a);
         return this.prisma.post.findMany({});
     }
 

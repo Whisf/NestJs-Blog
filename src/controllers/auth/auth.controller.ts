@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import {User as UserModel, Post as PostModel, Prisma } from '@prisma/client'; 
-import { AuthService } from './auth.service';
+import { AuthService } from '../../services/auth.service';
 import {ApiResponse, ApiBearerAuth, ApiOperation, ApiTags, ApiBody} from '@nestjs/swagger'
 import { User } from './dto/user.entity';
 import { tokenDto } from './dto/token.dto';

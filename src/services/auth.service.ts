@@ -1,9 +1,9 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { User, Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt'
 import { JwtService } from '@nestjs/jwt'
-import { tokenDto } from './dto/token.dto';
+import { tokenDto } from '../controllers/auth/dto/token.dto';
 
 @Injectable()
 export class AuthService {
@@ -60,7 +60,7 @@ export class AuthService {
         return this.generateToken({userId: user.id, email: user.email})
     }
 
-    generateToken(payload: { userId: string, email: string}): tokenDto {
+    generateToken(payload: { userId: string, email?: string}): tokenDto {
         return {
             accessToken: this.generateAccessToken(payload)
         }
@@ -68,5 +68,26 @@ export class AuthService {
 
     private generateAccessToken(payload: {userId: string}): string {
         return this.jwtService.sign(payload);
+    }
+
+    private generateRefreshToken(payload: {userId: string}): string {
+        return this.jwtService.sign(payload, {
+            secret: "THIS_IS_THE_BEST_SECRET_KEY",
+            expiresIn: '7d',
+        })
+    }
+
+    refreshToken(token: string) {
+        try {
+            const { userId } = this.jwtService.verify(token, {
+                secret: "THIS_IS_THE_BEST_SECRET_KEY" 
+            });
+
+            return this.generateToken({
+                userId,
+            })
+        } catch(e) {
+            throw new UnauthorizedException();
+        }
     }
 }
