@@ -8,12 +8,29 @@ export class UserService {
         private prisma: PrismaService
     ) {}
 
-    async changePassword(user: {email: string}) {
-        console.log(user)
-        const user_1 = this.prisma.user.findUnique({ where: {email: user.email}})
-        user_1.then(data => {
-            console.log(data)
-        })
+    userId: string,
+    userPassword: string,
+    changePassword: ChangePasswordInput
+  ) {
+    const passwordValid = await this.passwordService.validatePassword(
+      changePassword.oldPassword,
+      userPassword
+    );
+
+    if (!passwordValid) {
+      throw new BadRequestException('Invalid password');
     }
+
+    const hashedPassword = await this.passwordService.hashPassword(
+      changePassword.newPassword
+    );
+
+    return this.prisma.user.update({
+      data: {
+        password: hashedPassword,
+      },
+      where: { id: userId },
+    });
+  }
 
 }
